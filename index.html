@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Notes App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+    />
+    <script defer src="main.js"></script>
+  </head>
+  <body>
+    <!-- Form -->
+    <div class="popup-box">
+      <div class="popup">
+        <div class="content">
+          <header>
+            <p>Add a new Note</p>
+            <i class="uil uil-times"></i>
+          </header>
+          <form action="#">
+            <div class="row title">
+              <label>Title</label>
+              <input type="text" />
+            </div>
+            <div class="row description">
+              <label>Description</label>
+              <textarea></textarea>
+            </div>
+            <button>Add Note</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Navbar -->
+    <header
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #ccc;
+        height: 50px;
+        z-index: 100;
+      "
+    >
+      <h2>Notes</h2>
+      <div class="open-trash"><i class="uil uil-trash"></i></div>
+    </header>
+    <!-- Trash -->
+    <div class="trash">
+      <h2 class="empty-trash">Empty</h2>
+      <div class="trash-grid"></div>
+    </div>
+    <!-- <ul>
+      <li>-- Opcion de vaciar papelera</li>
+      <li>-- Fijar importantes</li>
+      <li>-- Dark Mode</li>
+      <li>-- Search</li>
+      <li>-- Animacion al scroll spawn note</li>
+      <li>-- Animation create a note</li>
+      <li>-- Animation delete a note</li>
+    </ul> -->
+    <!-- Wrapper -->
+    <div class="notes-container">
+      <header>
+        <h2>Notes <span class="count-value">0</span></h2>
+      </header>
+      <div class="wrapper">
+        <li class="add-box">
+          <div class="icon">
+            <i style="padding-bottom: 6px" class="uil uil-plus"></i>
+          </div>
+          <p>Add new note</p>
+        </li>
+      </div>
+      <!-- Notes -->
+    </div>
+  </body>
+</html>
