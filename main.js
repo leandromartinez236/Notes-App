@@ -1,3 +1,4 @@
+const body = document.querySelector('body')
 const addBox = document.querySelector(".add-box"),
   popupBox = document.querySelector(".popup-box"),
   popupTitle = popupBox.querySelector("header p"),
@@ -14,14 +15,41 @@ const openTrash = document.querySelector(".open-trash"),
 
 // LocalStorage
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-const notes = JSON.parse(localStorage.getItem("notes") || "[]")
-const trash = JSON.parse(localStorage.getItem("trash") || "[]")
+let notes = JSON.parse(localStorage.getItem("notes") || "[]")
+let trash = JSON.parse(localStorage.getItem("trash") || "[]")
 let isUpdate = false, updateId
-
 
 // Count Notes
 const countValue = document.querySelector('.count-value')
 
+// Modal Trash
+const btnEmptyTrash = document.querySelector(".btn-empty-trash")
+const openModal = document.querySelector('.open-modal');
+const modalTrash = document.querySelector('.modal-trash');
+const closeModal = document.querySelector('.close-modal');
+
+// Dark Mode
+const btnDarkMode = document.querySelector(".btn-dark-mode")
+btnDarkMode.addEventListener('click', () => {
+  body.classList.toggle('dark-mode')
+  if (body.classList.contains('dark-mode')) {
+    btnDarkMode.checked = true
+    localStorage.setItem('dark-mode', 'true')
+  } else {
+    btnDarkMode.checked = false
+    localStorage.setItem('dark-mode', 'false')
+  }
+})
+if (localStorage.getItem('dark-mode') === 'true') {
+  btnDarkMode.checked = true
+  body.classList.add('dark-mode')
+} else {
+  btnDarkMode.checked = false
+  body.classList.remove('dark-mode')
+}
+
+
+// 
 openTrash.addEventListener('click', () => {
   trashBox.classList.toggle("active")
   if (containerNotes.classList.value.includes("hidden")) {
@@ -44,6 +72,39 @@ closeIcon.addEventListener('click', () => {
   popupBox.classList.remove("show")
 })
 
+// Init App
+const showTrash = () => {
+  document.querySelector('.msg-trash').classList.remove('empty')
+  if (!trash.length > 0) {
+    document.querySelector('.msg-trash').classList.add('empty')
+  }
+
+  document.querySelectorAll(".trash-grid .note").forEach(note => note.remove())
+  trash?.forEach((note, index) => {
+    let noteTrash = document.createElement("li")
+    noteTrash.classList.add('note')
+    noteTrash.innerHTML = `
+        <div class="details">
+          <h3>${note.title}</h3>
+          <p>
+           ${note.description}.
+          </p>
+        </div>
+        <div class="bottom-content">
+          <span>${note.date}</span>
+          <div class="settings">
+            <i onclick="showMenu(this)" class="uil uil-ellipsis-h"></i>
+            <ul class="menu">
+              <li onclick="deleteNote(${index})"><i class="uil uil-trash"></i>Delete</li>
+              <li onclick="restoreNote(${index})"><i class="uil uil-history-alt"></i>Restore</li>
+            </ul>
+          </div>
+        </div>
+    `
+    noteTrash.style.opacity = 0.8
+    trashGrid.append(noteTrash)
+  })
+}
 const showNotes = () => {
   countValue.innerText = notes?.length
   document.querySelectorAll(".note").forEach(note => note.remove())
@@ -51,10 +112,10 @@ const showNotes = () => {
     let liTag = `
       <li class="note">
         <div class="details">
-          <p>${note.title}</p>
-          <span>
+          <h3>${note.title}</h3>
+          <p>
            ${note.description}.
-          </span>
+          </p>
         </div>
         <div class="bottom-content">
           <span>${note.date}</span>
@@ -71,39 +132,23 @@ const showNotes = () => {
     addBox.insertAdjacentHTML("afterend", liTag)
   })
 }
-showNotes()
-const showTrash = () => {
-  document.querySelector('.empty-trash').classList.remove('empty')
-  if (!trash.length > 0) {
-    console.log(trash.length > 0);
-    document.querySelector('.empty-trash').classList.add('empty')
-  }
-  document.querySelectorAll(".trash-grid .note").forEach(note => note.remove())
-  trash?.forEach((note, index) => {
-    let noteTrash = document.createElement("li")
-    noteTrash.classList.add('note')
-    noteTrash.innerHTML = `
-        <div class="details">
-          <p>${note.title}</p>
-          <span>
-           ${note.description}.
-          </span>
-        </div>
-        <div class="bottom-content">
-          <span>${note.date}</span>
-          <div class="settings">
-            <i onclick="showMenu(this)" class="uil uil-ellipsis-h"></i>
-            <ul class="menu">
-              <li onclick="deleteNote(${index})"><i class="uil uil-trash"></i>Delete</li>
-            </ul>
-          </div>
-        </div>
-    `
-    trashGrid.append(noteTrash)
-  })
-}
-showTrash()
 
+// Modal Trash
+openModal.addEventListener('click', () => {
+  modalTrash.classList.add('modal-trash-show')
+})
+closeModal.addEventListener('click', () => {
+  modalTrash.classList.remove('modal-trash-show')
+})
+btnEmptyTrash.addEventListener('click', () => {
+  localStorage.removeItem("trash")
+  trash = JSON.parse(localStorage.getItem("trash") || "[]")
+  showTrash()
+  modalTrash.classList.remove('modal-trash-show')
+})
+
+
+// Function Options Notes
 function showMenu(elem) {
   elem.parentElement.classList.add("show")
   // removing show class from the settings menu on document click
@@ -115,10 +160,8 @@ function showMenu(elem) {
   })
 }
 function moveToTrash(noteId) {
-  // noteCount -= 1
-  // displayCount(noteCount)
   let deletedNote = notes[noteId]
-  trash.push(deletedNote)
+  trash.unshift(deletedNote)
   notes.splice(noteId, 1)
   // saving updates notes to localStorage
   localStorage.setItem("notes", JSON.stringify(notes))
@@ -141,12 +184,21 @@ function updateNote(noteId, title, desc) {
   addBtn.innerText = "Update Note"
   popupTitle.innerText = "Update a Note"
 }
+function restoreNote(noteId) {
+  let note = trash[noteId]
+  trash.splice(noteId, 1)
+  notes.push(note)
+  localStorage.setItem("notes", JSON.stringify(notes))
+  localStorage.setItem("trash", JSON.stringify(trash))
+  showNotes()
+  showTrash()
+}
 
+// Add Note
 addBtn.addEventListener('click', (e) => {
   e.preventDefault()
   let noteTitle = titleTag.value,
-    noteDes = descTag.value
-  // noteBg = bgTag.value
+    noteDes = descTag.value.replaceAll(("\n"), ' ')
   if (noteTitle || noteDes) {
     let dateObj = new Date(),
       month = months[dateObj.getMonth()],
@@ -154,7 +206,7 @@ addBtn.addEventListener('click', (e) => {
       year = dateObj.getFullYear()
 
     let noteInfo = {
-      title: noteTitle,
+      title: noteTitle ? noteTitle : "Sin titulo",
       description: noteDes,
       date: `${month} ${day}, ${year}`,
     }
@@ -170,3 +222,10 @@ addBtn.addEventListener('click', (e) => {
     showNotes()
   }
 })
+
+// Init App
+const initApp = () => [
+  showNotes(),
+  showTrash()
+]
+initApp()

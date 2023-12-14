@@ -2,10 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Notes App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes App</title>
     <link rel="stylesheet" href="styles.css" />
     <link
+      importance="high"
       rel="stylesheet"
       href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
     />
@@ -23,55 +24,60 @@
           <form action="#">
             <div class="row title">
               <label>Title</label>
-              <input type="text" />
+              <input maxlength="30" type="text" />
             </div>
             <div class="row description">
               <label>Description</label>
-              <textarea></textarea>
+              <textarea maxlength="450"></textarea>
             </div>
             <button>Add Note</button>
           </form>
         </div>
       </div>
     </div>
+
     <!-- Navbar -->
-    <header
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: #ccc;
-        height: 50px;
-        z-index: 100;
-      "
-    >
+    <header class="navbar">
       <h2>Notes</h2>
-      <div class="open-trash"><i class="uil uil-trash"></i></div>
+      <div style="display: flex; align-items: center; gap: 1rem">
+        <div class="open-trash"><i class="uil uil-trash"></i></div>
+        <label class="switch-container">
+          <input class="btn-dark-mode" type="checkbox" />
+          <span class="slider"></span>
+        </label>
+      </div>
     </header>
+
     <!-- Trash -->
-    <div class="trash">
-      <h2 class="empty-trash">Empty</h2>
+    <div class="trash container">
+      <h2 class="msg-trash">Empty</h2>
+      <button class="empty-trash open-modal">
+        <i class="uil uil-trash"></i>Vaciar papelera
+      </button>
+
+      <!-- Modal Trash -->
+      <div class="modal-trash">
+        <div class="modal-trash-container">
+          <h2>¿Deseas vaciar la papelera?</h2>
+          <div class="btn-options">
+            <button class="btn-empty-trash">Vaciar</button>
+            <button class="close-modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+      <!-- Trash Grid -->
       <div class="trash-grid"></div>
     </div>
-    <!-- <ul>
-      <li>-- Opcion de vaciar papelera</li>
-      <li>-- Fijar importantes</li>
-      <li>-- Dark Mode</li>
-      <li>-- Search</li>
-      <li>-- Animacion al scroll spawn note</li>
-      <li>-- Animation create a note</li>
-      <li>-- Animation delete a note</li>
-    </ul> -->
+
     <!-- Wrapper -->
-    <div class="notes-container">
+    <div class="container notes-container">
       <header>
         <h2>Notes <span class="count-value">0</span></h2>
       </header>
       <div class="wrapper">
         <li class="add-box">
           <div class="icon">
-            <i style="padding-bottom: 6px" class="uil uil-plus"></i>
+            <i style="padding-bottom: 2px" class="uil uil-plus"></i>
           </div>
           <p>Add new note</p>
         </li>
