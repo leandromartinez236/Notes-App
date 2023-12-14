@@ -224,8 +224,8 @@ addBtn.addEventListener('click', (e) => {
 })
 
 // Init App
-const initApp = () => [
+const initApp = () => {
   showNotes(),
-  showTrash()
-]
+    showTrash()
+}
 initApp()
